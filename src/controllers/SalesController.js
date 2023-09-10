@@ -8,14 +8,14 @@ exports.createSales = async (req, res) => {
         res.status(201).json({
             success: true,
             message: 'Data Inserted Successfully',
-            data: result // Include the inserted data in the response
+            data: result
         });
     } catch (error) {
         console.error(error);
         res.status(500).json({
             success: false,
             message: 'Failed to insert data',
-            error: error.message // Include the error message in the response
+            error: error.message
         });
     }
 };
@@ -105,7 +105,7 @@ exports.getQuantityByProduct = async (req, res) => {
 };
 
 // sales with top-products
-exports.salesTopProducts = async(req, res, next) => {
+exports.salesTopProducts = async(req, res) => {
     try {
         const topProductSales = await SalesModel.aggregate([
             {
@@ -132,5 +132,24 @@ exports.salesTopProducts = async(req, res, next) => {
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Internal server error' });
+    }
+}
+//Get Average Price
+exports.saleAvaragePrice = async (req, res) => {
+    try {
+        const saleAvgPrice = await SalesModel.aggregate([
+            {
+                $group : {
+                    _id :null,
+                    averagePrice : {$avg : "$price"}
+                }
+            }
+        ])
+        res.status(200).json({ saleAvgPrice:saleAvgPrice })
+    } catch (error) {
+        res.status(200).json({
+            success: false,
+            data: error
+        });
     }
 }
