@@ -1,7 +1,6 @@
 const mongoose=require("mongoose")
-const {model} = require("mongoose");
 
-const SalesSchema= mongoose.Schema({
+const SalesSchema=new mongoose.Schema({
     product:{type:String,required:true},
     quantity:{type:Number},
     price:{type:Number},
@@ -9,5 +8,5 @@ const SalesSchema= mongoose.Schema({
 
 },{timeStamp:true,versionKey:false});
 
-const SalesModel=model('sales',SalesSchema);
+const SalesModel=mongoose.model('sales',SalesSchema);
 module.exports=SalesModel;
