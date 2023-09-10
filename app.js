@@ -24,10 +24,10 @@ app.use(limiter);*/
 
 
 mongoose.connect(process.env.DATABASE).then(()=>{
-    console.log("Success")
+    console.log("Success");
 }).catch((err)=> console.log(err));
 
-app.use("/api/v1",router)
+app.use("/api/v1",router);
 app.use("*",(req,res)=>{
     res.status(404).json({status:'Fail',data:"Not Found"})
 })
