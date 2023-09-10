@@ -82,7 +82,7 @@ exports.getQuantityByProduct = async (req, res) => {
         const result = await SalesModel.aggregate([
             {
                 $group: {
-                    _id: '$_id',
+                    _id: { _id: '$_id', product: '$product' },
                     totalQuantity: { $sum: '$quantity' },
                 },
             },
@@ -91,9 +91,46 @@ exports.getQuantityByProduct = async (req, res) => {
         if (result.length === 0) {
             return res.status(404).json({ message: 'No sales data found' });
         }
-        res.status(200).json(result);
+        const formattedResult = result.map((item) => ({
+            _id: item._id._id,
+            product: item._id.product,
+            totalQuantity: item.totalQuantity,
+        }));
+
+        res.status(200).json(formattedResult);
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Internal server error' });
     }
 };
+
+// sales/top-products
+exports.salesTopProducts = async(req, res, next) => {
+    try {
+        const topProductSales = await SalesModel.aggregate([
+            {
+                $group : {
+                    _id: { _id: '$_id', product: '$product' },
+                    totalRevenue : {$sum : {$multiply : ["$quantity", "$price"]}}
+                }
+            },
+            {
+                $sort: { totalRevenue: -1 },
+            },
+            {
+                $limit: 5,
+            },
+
+        ]);
+        const formattedResult = topProductSales.map((item) => ({
+            _id: item._id._id,
+            product: item._id.product,
+            totalRevenue: item.totalRevenue,
+        }));
+
+        res.status(200).json(formattedResult);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+}
