@@ -66,7 +66,7 @@ exports.totalSelByProductId = async(req,res) => {
         ])
         res.status(200).json({
             success: true,
-            data: totalSaleByProductId // Include the inserted data in the response
+            data: totalSaleByProductId
         });
 
     } catch (error) {
@@ -76,7 +76,7 @@ exports.totalSelByProductId = async(req,res) => {
     }
 }
 
-// Controller function to find and return the total quantity sold for each product
+// Get Quantity By Product
 exports.getQuantityByProduct = async (req, res) => {
     try {
         const result = await SalesModel.aggregate([
@@ -104,7 +104,7 @@ exports.getQuantityByProduct = async (req, res) => {
     }
 };
 
-// sales/top-products
+// sales with top-products
 exports.salesTopProducts = async(req, res, next) => {
     try {
         const topProductSales = await SalesModel.aggregate([
